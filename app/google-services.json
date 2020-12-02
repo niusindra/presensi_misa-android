@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "686317991510",
+    "firebase_url": "https://presensimisa.firebaseio.com",
+    "project_id": "presensimisa",
+    "storage_bucket": "presensimisa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686317991510:android:7450b382d7988c3038edf7",
+        "android_client_info": {
+          "package_name": "com.example.presensimisa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686317991510-90fq3lvcouf1jrvg9oe61gq422n1gsba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEO9lLRdO2tCPiCUC6r2JFzXnhqb6FA7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686317991510-90fq3lvcouf1jrvg9oe61gq422n1gsba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
