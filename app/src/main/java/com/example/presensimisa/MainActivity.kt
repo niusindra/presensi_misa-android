@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     tvWaktu.text = misaJSON.optString("waktu")
                     tvKode.text = misaJSON.optString("kode_misa")
 
-                    Toast.makeText(this, response.getString("message"), Toast.LENGTH_LONG)
+                    Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT)
                         .show()
                 } catch (e: JSONException) {
                     e.printStackTrace()
