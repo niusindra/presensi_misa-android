@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
@@ -18,31 +17,41 @@ import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var listUmat:List<Umat>
-
+    private lateinit var idMisa:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // attaching onclickListener
-        btnScan.setOnClickListener(this);
+
+        if(intent.extras != null)
+        {
+            getDataMisa(intent.getStringExtra("kode_misa").toString())
+        }
+
+        btnScan.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
                 Toast.makeText(this, "Hasil tidak ditemukan", Toast.LENGTH_SHORT).show()
             } else {
-                // jika qrcode berisi data
                 try {
                     // converting the data json
-                    val umat = JSONObject(result.contents)
+//                    val umat = JSONObject(result.contents)
+                    //GET UMAT BY QR CODE
 
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                    builder.setTitle(umat.getString("id"))
-                    builder.setMessage(umat.getString("nama"))
-                    val alert1: AlertDialog = builder.create()
-                    alert1.show()
+                    val manager = this.supportFragmentManager
+                    val dialog = InputKursi()
+                    dialog.show(manager, "dialog")
+
+                    val args = Bundle()
+//                    args.putString("id_umat", umat.getString("id"))
+//                    args.putString("id_misa", umat.getString("id"))
+                    args.putString("qr_umat", result.contents)
+                    args.putString("id_misa", idMisa)
+                    dialog.arguments = args
                 } catch (e: JSONException) {
                     e.printStackTrace()
                     // jika format encoded tidak sesuai maka hasil
@@ -57,13 +66,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         // inisialisasi IntentIntegrator(scanQR)
-//        var intentIntegrator = IntentIntegrator(this)
-//        intentIntegrator.setOrientationLocked(false)
-//        intentIntegrator.initiateScan()
-        tambahBuku()
+        val intentIntegrator = IntentIntegrator(this)
+        intentIntegrator.setOrientationLocked(false)
+        intentIntegrator.initiateScan()
     }
 
-    fun tambahBuku() {
+    fun getDataMisa(kode_misa:String){
         val queue = Volley.newRequestQueue(this)
         val progressDialog: ProgressDialog = ProgressDialog(this)
         progressDialog.setMessage("loading....")
@@ -71,22 +79,31 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.show()
 
-        val jsonobj = JSONObject()
-        jsonobj.put("id_misa", 1)
-        jsonobj.put("id_umat", 1)
-
-        val url = "http://10.0.2.2:8000/api/presensi"
-        val request = JsonObjectRequest(Request.Method.POST, url, jsonobj,
+        val url = "http://192.168.43.250:8000/api/misabykode/$kode_misa"
+        println(url)
+        val request = JsonObjectRequest(
+            Request.Method.GET, url, null,
             { response ->
                 progressDialog.dismiss()
                 try {
-                    Toast.makeText(this, response.getString("message"), Toast.LENGTH_LONG).show()
+                    val misaJSON: JSONObject = response.getJSONObject("data")
+
+                    idMisa = misaJSON.optString("id")
+                    tvMisa.text = misaJSON.optString("misa")
+                    tvTempat.text = misaJSON.optString("tempat")
+                    tvWaktu.text = misaJSON.optString("waktu")
+                    tvKode.text = misaJSON.optString("kode_misa")
+
+                    Toast.makeText(this, response.getString("message"), Toast.LENGTH_LONG)
+                        .show()
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
             }, { error ->
                 progressDialog.dismiss()
                 error.printStackTrace()
+                println("masuk error")
+                this.finish()
             })
         request.retryPolicy = DefaultRetryPolicy(
             0,
