@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.show()
 
-        val url = "http://192.168.43.250:8000/api/misabykode/$kode_misa"
+        val url = "http://api.bundakasih.site/api/misabykode/$kode_misa"
         println(url)
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,

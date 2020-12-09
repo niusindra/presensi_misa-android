@@ -53,7 +53,7 @@ class InputKursi : DialogFragment(){
             jsonobj.put("id_umat", idUmat)
             jsonobj.put("no_kursi", v.etKursi.text)
 
-            val url = "http://192.168.43.250:8000/api/storepresensi"
+            val url = "http://api.bundakasih.site/api/storepresensi"
             val request = JsonObjectRequest(
                 Request.Method.POST, url, jsonobj,
                 { response ->
@@ -90,7 +90,7 @@ class InputKursi : DialogFragment(){
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
         progressDialog.show()
 
-        val url = "http://192.168.43.250:8000/api/umatbyqr/$qr"
+        val url = "http://api.bundakasih.site/api/umatbyqr/$qr"
         println(url)
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
